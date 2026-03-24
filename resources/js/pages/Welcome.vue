@@ -35,7 +35,6 @@
         <!-- JOB OVERVIEW SECTION -->
         <section id="stellenanzeigen" class="jobs-section">
 
-            <!-- Hero images from the first 3 jobs -->
             <div class="jobs-hero-images">
                 <div
                     v-for="stelle in heroStellen"
@@ -61,27 +60,73 @@
             <h2 class="jobs-headline">Level Up – Probier was Neues.</h2>
 
             <div v-if="stellen.length > 0" class="jobs-grid">
-                <Link
+                <a
                     v-for="stelle in stellen"
                     :key="stelle.StellenID"
-                    :href="`/jobs/${stelle.StellenID}`"
+                    :href="`#stelle-${stelle.StellenID}`"
                     class="job-card"
+                    @click.prevent="scrollToStelle(stelle.StellenID)"
                 >
                     <h3 class="job-title">{{ stelle.Name }}</h3>
                     <p class="job-location">Ort: {{ stelle.Arbeitsorte }}</p>
                     <p class="job-description">{{ stelle.Kurzbeschreibung }}</p>
-                </Link>
+                </a>
             </div>
 
             <p v-else class="no-jobs">Aktuell sind keine Stellen ausgeschrieben.</p>
 
         </section>
 
+        <!-- JOB DETAIL SECTIONS — one per Stelle, dynamically rendered -->
+        <template v-for="stelle in stellen" :key="`detail-${stelle.StellenID}`">
+
+            <!-- Green header -->
+            <section :id="`stelle-${stelle.StellenID}`" class="detail-header">
+                <div class="detail-header-content">
+                    <h2 class="detail-title">{{ stelle.Name }}</h2>
+                    <p class="detail-desc">
+                        {{ stelle.Beschreibung || dummyBeschreibung }}
+                    </p>
+                    <a href="#" class="detail-apply-btn">Jetzt bewerben!</a>
+                </div>
+                <div class="detail-header-image">
+                    <img
+                        v-if="stelle.ImageID"
+                        :src="`/images/${stelle.ImageID}`"
+                        :alt="stelle.Name"
+                    />
+                    <div v-else class="detail-img-placeholder" />
+                </div>
+            </section>
+
+            <!-- White body: tasks + requirements -->
+            <section class="detail-body">
+                <div class="detail-col">
+                    <h3 class="detail-col-title">Was dich bei uns erwartet</h3>
+                    <ul class="detail-list">
+                        <li
+                            v-for="(item, i) in (stelle.Aufgaben?.length ? stelle.Aufgaben : dummyAufgaben)"
+                            :key="i"
+                        >{{ item }}</li>
+                    </ul>
+                </div>
+                <div class="detail-col">
+                    <h3 class="detail-col-title">Was du mitbringen solltest</h3>
+                    <ul class="detail-list">
+                        <li
+                            v-for="(item, i) in (stelle.Voraussetzungen?.length ? stelle.Voraussetzungen : dummyVoraussetzungen)"
+                            :key="i"
+                        >{{ item }}</li>
+                    </ul>
+                </div>
+            </section>
+
+        </template>
+
     </div>
 </template>
 
 <script setup>
-import { Link } from '@inertiajs/vue3'
 import { computed } from 'vue'
 import PublicNavbar from '@/components/PublicNavbar.vue'
 
@@ -107,6 +152,24 @@ const features = [
     },
 ]
 
+const dummyBeschreibung = 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et'
+
+const dummyAufgaben = [
+    'Entwicklung individueller Softwarelösungen mit modernen Technologien und Anpassung bestehender Anwendungen – zielgerichtet, durchdacht und effizient',
+    'Analyse von Geschäftsprozessen und technischen Anforderungen sowie Ableitung pragmatischer Entwicklungsstrategien',
+    'Enge Zusammenarbeit mit Berater:innen und Kund:innen, um Prozesse zu digitalisieren und zu automatisieren',
+    'Unterstützung bei der Migration auf neue Systeme sowie bei der Einführung neuer Technologien und Performanceoptimierungen',
+    'Stetiges Lernen, Wissensaustausch im Team und Möglichkeit zur Weiterentwicklung in Kundenprojekten',
+]
+
+const dummyVoraussetzungen = [
+    'Abgeschlossenes Studium im Bereich (Wirtschafts-)Informatik, eine vergleichbare Ausbildung oder eine ausgeprägte IT-Affinität als Quereinsteiger:in',
+    'Interesse an der Energiewirtschaft und daran, wie digitale Prozesse die Abrechnung grüner Energie erleichtern',
+    'Freude an Softwareentwicklung, Problemlösungsdenken und eigenständigem Arbeiten',
+    'Lust auf Teamarbeit, Kundennähe und gelegentliche Dienstreisen innerhalb Deutschlands',
+    'Sehr gute Deutschkenntnisse und idealerweise Englischkenntnisse',
+]
+
 const heroStellen = computed(() =>
     props.stellen.filter(s => s.ImageID).slice(0, 3)
 )
@@ -114,12 +177,15 @@ const heroStellen = computed(() =>
 function scrollToJobs() {
     document.getElementById('stellenanzeigen')?.scrollIntoView({ behavior: 'smooth' })
 }
+
+function scrollToStelle(id) {
+    document.getElementById(`stelle-${id}`)?.scrollIntoView({ behavior: 'smooth' })
+}
 </script>
 
 <style scoped>
 /* ── Google Font ── */
 @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300&display=swap');
-
 
 /* ── Page ── */
 .landing-page {
@@ -139,7 +205,7 @@ function scrollToJobs() {
 .hero-image {
     position: relative;
     overflow: hidden;
-    padding: 4rem;
+    padding: 3rem;
 }
 
 .hero-image img {
@@ -327,6 +393,7 @@ function scrollToJobs() {
     text-decoration: none;
     color: inherit;
     display: block;
+    cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -371,10 +438,125 @@ function scrollToJobs() {
     padding: 3rem 0;
 }
 
+/* ── JOB DETAIL: green header ── */
+.detail-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 420px;
+    background-color: #2d7a2d;
+    scroll-margin-top: 1rem;
+}
+
+.detail-header-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 3.5rem 3rem 3.5rem 4rem;
+}
+
+.detail-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+    color: #ffffff;
+    margin: 0 0 1.5rem;
+}
+
+.detail-desc {
+    font-size: 1.05rem;
+    line-height: 1.75;
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0 0 2.5rem;
+}
+
+.detail-apply-btn {
+    display: inline-block;
+    align-self: flex-start;
+    background: #1a1a1a;
+    color: #ffffff;
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.8rem 2rem;
+    border-radius: 999px;
+    text-decoration: none;
+    transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.detail-apply-btn:hover {
+    background: #333333;
+    transform: translateY(-2px);
+}
+
+.detail-header-image {
+    overflow: hidden;
+}
+
+.detail-header-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.detail-img-placeholder {
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.12);
+}
+
+/* ── JOB DETAIL: white body ── */
+.detail-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background-color: #f5f5f5;
+    padding: 3.5rem 4rem;
+    gap: 3rem;
+}
+
+.detail-col-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #1a1a1a;
+    text-align: center;
+    margin: 0 0 2rem;
+}
+
+.detail-list {
+    list-style: disc;
+    padding-left: 1.25rem;
+    margin: 0;
+}
+
+.detail-list li {
+    font-size: 0.92rem;
+    line-height: 1.7;
+    color: #3a3a3a;
+    margin-bottom: 1rem;
+}
+
+.detail-list li:last-child {
+    margin-bottom: 0;
+}
+
 /* ── Responsive ── */
 @media (max-width: 900px) {
     .jobs-grid {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    .detail-body {
+        padding: 2.5rem 2rem;
+        gap: 2rem;
     }
 }
 
@@ -405,6 +587,23 @@ function scrollToJobs() {
     .jobs-grid {
         grid-template-columns: 1fr;
         padding: 0 1.25rem;
+    }
+
+    .detail-header {
+        grid-template-columns: 1fr;
+    }
+
+    .detail-header-image {
+        height: 280px;
+    }
+
+    .detail-header-content {
+        padding: 2.5rem 1.5rem;
+    }
+
+    .detail-body {
+        grid-template-columns: 1fr;
+        padding: 2rem 1.5rem;
     }
 }
 </style>

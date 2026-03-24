@@ -5,9 +5,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\StelleController;
 
 Route::get('/', function () {
-    $stellen = \App\Models\Stelle::online()
-        ->select(['StellenID', 'Name', 'Kurzbeschreibung', 'Arbeitsorte', 'ImageID'])
-        ->get();
+    $stellen = \App\Models\Stelle::online()->get();
 
     return Inertia::render('Welcome', ['stellen' => $stellen]);
 });
