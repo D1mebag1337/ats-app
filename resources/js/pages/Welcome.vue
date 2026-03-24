@@ -9,7 +9,7 @@
             <div class="hero-content">
                 <h1 class="hero-title">Bereit für den nächsten Schritt?</h1>
                 <p class="hero-subtitle">Dann bewirb dich jetzt!</p>
-                <Link href="/jobs" class="hero-btn">Zu den Stellenanzeigen</Link>
+                <a href="#stellenanzeigen" class="hero-btn" @click.prevent="scrollToJobs">Zu den Stellenanzeigen</a>
             </div>
         </section>
 
@@ -30,11 +30,64 @@
             </div>
         </section>
 
+        <!-- JOB OVERVIEW SECTION -->
+        <section id="stellenanzeigen" class="jobs-section">
+
+            <!-- Hero images from the first 3 jobs -->
+            <div class="jobs-hero-images">
+                <div
+                    v-for="stelle in heroStellen"
+                    :key="stelle.StellenID"
+                    class="jobs-hero-slot"
+                >
+                    <img
+                        v-if="stelle.ImageID"
+                        :src="`/images/${stelle.ImageID}`"
+                        :alt="stelle.Name"
+                    />
+                    <div v-else class="jobs-hero-placeholder" />
+                </div>
+                <div
+                    v-for="n in Math.max(0, 3 - heroStellen.length)"
+                    :key="`ph-${n}`"
+                    class="jobs-hero-slot"
+                >
+                    <div class="jobs-hero-placeholder" />
+                </div>
+            </div>
+
+            <h2 class="jobs-headline">Level Up – Probier was Neues.</h2>
+
+            <div v-if="stellen.length > 0" class="jobs-grid">
+                <Link
+                    v-for="stelle in stellen"
+                    :key="stelle.StellenID"
+                    :href="`/jobs/${stelle.StellenID}`"
+                    class="job-card"
+                >
+                    <h3 class="job-title">{{ stelle.Name }}</h3>
+                    <p class="job-location">Ort: {{ stelle.Arbeitsorte }}</p>
+                    <p class="job-description">{{ stelle.Kurzbeschreibung }}</p>
+                </Link>
+            </div>
+
+            <p v-else class="no-jobs">Aktuell sind keine Stellen ausgeschrieben.</p>
+
+        </section>
+
     </div>
 </template>
 
 <script setup>
 import { Link } from '@inertiajs/vue3'
+import { computed } from 'vue'
+
+const props = defineProps({
+    stellen: {
+        type: Array,
+        default: () => [],
+    },
+})
 
 const features = [
     {
@@ -50,6 +103,14 @@ const features = [
         text: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accus',
     },
 ]
+
+const heroStellen = computed(() =>
+    props.stellen.filter(s => s.ImageID).slice(0, 3)
+)
+
+function scrollToJobs() {
+    document.getElementById('stellenanzeigen')?.scrollIntoView({ behavior: 'smooth' })
+}
 </script>
 
 <style scoped>
@@ -137,6 +198,7 @@ const features = [
     text-decoration: none;
     transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
     box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+    cursor: pointer;
 }
 
 .hero-btn:hover {
@@ -201,7 +263,118 @@ const features = [
     margin: 0;
 }
 
+/* ── JOBS SECTION ── */
+.jobs-section {
+    background-color: #2d7a2d;
+    padding: 0 0 4rem;
+    scroll-margin-top: 1rem;
+}
+
+.jobs-hero-images {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    padding: 2rem 2rem 0;
+}
+
+.jobs-hero-slot {
+    aspect-ratio: 5 / 6;
+    overflow: hidden;
+    border-radius: 12px;
+}
+
+.jobs-hero-slot img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.jobs-hero-placeholder {
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+}
+
+.jobs-headline {
+    font-family: 'Oswald', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 700;
+    color: #ffffff;
+    text-transform: uppercase;
+    text-align: center;
+    letter-spacing: -0.01em;
+    margin: 2.5rem 0;
+}
+
+.jobs-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.job-card {
+    background: #e8e8e8;
+    border-radius: 16px;
+    padding: 1.75rem 1.5rem;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.job-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.job-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #1a1a1a;
+    margin: 0 0 0.5rem;
+    line-height: 1.2;
+}
+
+.job-location {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #1a1a1a;
+    margin: 0 0 1.25rem;
+}
+
+.job-description {
+    font-size: 0.92rem;
+    line-height: 1.65;
+    color: #3a3a3a;
+    font-weight: 300;
+    margin: 0;
+}
+
+.no-jobs {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.1rem;
+    padding: 3rem 0;
+}
+
 /* ── Responsive ── */
+@media (max-width: 900px) {
+    .jobs-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 @media (max-width: 768px) {
     .hero {
         grid-template-columns: 1fr;
@@ -218,6 +391,17 @@ const features = [
     .features-grid {
         grid-template-columns: 1fr;
         gap: 2rem;
+    }
+
+    .jobs-hero-images {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        padding: 1.5rem 1.5rem 0;
+    }
+
+    .jobs-grid {
+        grid-template-columns: 1fr;
+        padding: 0 1.25rem;
     }
 }
 </style>
