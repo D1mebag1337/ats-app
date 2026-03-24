@@ -21,6 +21,19 @@ class HandleInertiaRequests extends Middleware
      *
      * @see https://inertiajs.com/asset-versioning
      */
+    private function resolveDisplayName(Request $request): ?string
+    {
+        $user = $request->user();
+        if (! $user) return null;
+
+        $bewerber = $user->bewerber;
+        if ($bewerber) {
+            return trim("{$bewerber->Vorname} {$bewerber->Name}");
+        }
+
+        return $user->Email;
+    }
+
     public function version(Request $request): ?string
     {
         return parent::version($request);
@@ -40,6 +53,8 @@ class HandleInertiaRequests extends Middleware
             'name' => config('app.name'),
             'auth' => [
                 'user' => $request->user(),
+                'displayName' => $this->resolveDisplayName($request),
+                'role' => $request->user()?->Role,
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];

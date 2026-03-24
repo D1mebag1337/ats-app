@@ -1,36 +1,58 @@
 <template>
     <div class="navbar-wrapper">
         <nav class="navbar">
-            <Link href="/" class="navbar-brand">
-                <span class="brand-mark"></span>
-                <span class="brand-name">ATS Web-Application</span>
-            </Link>
 
-            <div class="navbar-actions">
-                <template v-if="user">
-                    <Link href="/dashboard" class="nav-btn nav-btn--outline">Dashboard</Link>
-                </template>
-                <template v-else>
-                    <Link href="/auth" class="nav-btn nav-btn--dark">Login</Link>
-                </template>
-            </div>
+            <!-- Logged OUT: brand on the left -->
+            <template v-if="!user">
+                <Link href="/" class="navbar-brand">
+                    <span class="brand-mark"></span>
+                    <span class="brand-name">ATS Web-Application</span>
+                </Link>
+                <span class="navbar-spacer"></span>
+                <Link href="/auth" class="nav-btn nav-btn--dark">Login</Link>
+            </template>
+
+            <!-- Logged IN: greeting + role actions + logout -->
+            <template v-else>
+                <span class="navbar-greeting">
+                    Hallo <strong>{{ displayName }}</strong>
+                </span>
+
+                <div class="navbar-actions">
+                    <!-- Recruiter-only buttons -->
+                    <template v-if="isRecruiter">
+                        <Link href="/stellen" class="nav-btn nav-btn--outline">Stellen editieren</Link>
+                        <Link href="/stellen/create" class="nav-btn nav-btn--outline">Neue Stelle</Link>
+                    </template>
+                </div>
+
+                <form method="POST" action="/auth/logout" @submit.prevent="logout">
+                    <button type="submit" class="nav-btn nav-btn--dark">Ausloggen</button>
+                </form>
+            </template>
+
         </nav>
     </div>
 </template>
 
 <script setup>
-import { Link, usePage } from '@inertiajs/vue3'
+import { Link, router, usePage } from '@inertiajs/vue3'
 import { computed } from 'vue'
 
 const page = usePage()
 const user = computed(() => page.props.auth?.user ?? null)
-const appName = computed(() => page.props.name ?? 'ATS')
+const displayName = computed(() => page.props.auth?.displayName ?? page.props.auth?.user?.Email ?? '')
+const role = computed(() => page.props.auth?.role ?? null)
+const isRecruiter = computed(() => role.value === 'R' || role.value === 'H')
+
+function logout() {
+    router.post('/auth/logout')
+}
 </script>
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Source+Serif+4:wght@400;600&display=swap');
 
-/* Outer wrapper stays sticky and provides the green backdrop */
 .navbar-wrapper {
     position: sticky;
     top: 0;
@@ -39,7 +61,6 @@ const appName = computed(() => page.props.name ?? 'ATS')
     padding: 0.6rem 1.25rem 0rem;
 }
 
-/* The pill itself */
 .navbar {
     display: flex;
     align-items: center;
@@ -74,10 +95,27 @@ const appName = computed(() => page.props.name ?? 'ATS')
     color: #1a1a1a;
 }
 
+.navbar-greeting {
+    font-family: 'Source Serif 4', serif;
+    font-size: 0.95rem;
+    color: #1a1a1a;
+    white-space: nowrap;
+}
+
+.navbar-greeting strong {
+    font-weight: 700;
+}
+
+.navbar-spacer {
+    flex: 1;
+}
+
 .navbar-actions {
     display: flex;
     align-items: center;
     gap: 0.65rem;
+    flex: 1;
+    justify-content: center;
 }
 
 .nav-btn {
@@ -89,9 +127,10 @@ const appName = computed(() => page.props.name ?? 'ATS')
     border-radius: 999px;
     transition: opacity 0.15s ease, transform 0.15s ease;
     white-space: nowrap;
+    cursor: pointer;
+    background: none;
 }
 
-/* Outlined style — matches the middle buttons in the image */
 .nav-btn--outline {
     background: transparent;
     color: #1a1a1a;
@@ -103,7 +142,6 @@ const appName = computed(() => page.props.name ?? 'ATS')
     transform: translateY(-1px);
 }
 
-/* Dark filled — matches the "Ausloggen" button on the right */
 .nav-btn--dark {
     background: #1a1a1a;
     color: #ffffff;
