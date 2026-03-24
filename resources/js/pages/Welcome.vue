@@ -172,7 +172,7 @@ function scrollToJobs() {
     font-family: 'Oswald', sans-serif;
     font-size: clamp(2.4rem, 4vw, 3.6rem);
     font-weight: 700;
-    line-height: 1.05;
+    line-height: 1.45;
     color: #ffffff;
     text-transform: uppercase;
     letter-spacing: -0.01em;
