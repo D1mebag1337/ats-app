@@ -1,6 +1,8 @@
 <template>
     <div class="landing-page">
 
+        <PublicNavbar />
+
         <!-- HERO SECTION -->
         <section class="hero">
             <div class="hero-image">
@@ -81,6 +83,7 @@
 <script setup>
 import { Link } from '@inertiajs/vue3'
 import { computed } from 'vue'
+import PublicNavbar from '@/components/PublicNavbar.vue'
 
 const props = defineProps({
     stellen: {
