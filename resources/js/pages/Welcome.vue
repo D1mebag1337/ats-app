@@ -42,8 +42,8 @@
                     class="jobs-hero-slot"
                 >
                     <img
-                        v-if="stelle.ImageID"
-                        :src="`/images/${stelle.ImageID}`"
+                        v-if="stelle.image?.Alternativtext"
+                        :src="`/stelle-images/${stelle.image.Alternativtext}`"
                         :alt="stelle.Name"
                     />
                     <div v-else class="jobs-hero-placeholder" />
@@ -91,8 +91,8 @@
                 </div>
                 <div class="detail-header-image">
                     <img
-                        v-if="stelle.ImageID"
-                        :src="`/images/${stelle.ImageID}`"
+                        v-if="stelle.image?.Alternativtext"
+                        :src="`/stelle-images/${stelle.image.Alternativtext}`"
                         :alt="stelle.Name"
                     />
                     <div v-else class="detail-img-placeholder" />
@@ -171,7 +171,7 @@ const dummyVoraussetzungen = [
 ]
 
 const heroStellen = computed(() =>
-    props.stellen.filter(s => s.ImageID).slice(0, 3)
+    props.stellen.filter(s => s.image?.Alternativtext).slice(0, 3)
 )
 
 function scrollToJobs() {
