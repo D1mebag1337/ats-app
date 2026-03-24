@@ -11,7 +11,7 @@
                     <Link href="/dashboard" class="nav-btn nav-btn--outline">Dashboard</Link>
                 </template>
                 <template v-else>
-                    <Link href="/login" class="nav-btn nav-btn--dark">Login</Link>
+                    <Link href="/auth" class="nav-btn nav-btn--dark">Login</Link>
                 </template>
             </div>
         </nav>
