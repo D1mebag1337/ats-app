@@ -77,6 +77,11 @@
 
         </section>
 
+        <!-- Separator -->
+        <div v-if="stellen.length > 0" class="section-divider">
+            <span class="section-divider-label">Offene Stellen im Detail</span>
+        </div>
+
         <!-- JOB DETAIL SECTIONS — one per Stelle, dynamically rendered -->
         <template v-for="stelle in stellen" :key="`detail-${stelle.StellenID}`">
 
@@ -438,6 +443,35 @@ function scrollToStelle(id) {
     padding: 3rem 0;
 }
 
+/* ── Section divider ── */
+.section-divider {
+    background-color: #1f5c1f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.1rem 2rem;
+    gap: 1.5rem;
+}
+
+.section-divider::before,
+.section-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.3);
+    max-width: 280px;
+}
+
+.section-divider-label {
+    font-family: 'Oswald', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.65);
+    white-space: nowrap;
+}
+
 /* ── JOB DETAIL: green header ── */
 .detail-header {
     display: grid;
@@ -496,6 +530,9 @@ function scrollToStelle(id) {
 
 .detail-header-image {
     overflow: hidden;
+    padding: 2rem 2.5rem 2rem 1rem;
+    display: flex;
+    align-items: center;
 }
 
 .detail-header-image img {
@@ -503,6 +540,7 @@ function scrollToStelle(id) {
     height: 100%;
     object-fit: cover;
     display: block;
+    border-radius: 14px;
 }
 
 .detail-img-placeholder {
@@ -594,7 +632,8 @@ function scrollToStelle(id) {
     }
 
     .detail-header-image {
-        height: 280px;
+        height: 320px;
+        padding: 1.5rem;
     }
 
     .detail-header-content {
