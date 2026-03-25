@@ -64,7 +64,7 @@
                 <div class="card">
 
                     <div class="upload-field" v-for="doc in docs" :key="doc.key">
-                        <span class="upload-label">{{ doc.label }}</span>
+                        <span class="upload-label">{{ doc.label }}<span v-if="doc.required" class="required-star"> *</span></span>
                         <label class="upload-btn" :for="doc.key">
                             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M5 20h14v-2H5v2zm0-10h4v6h6v-6h4l-7-7-7 7z"/>
@@ -115,10 +115,10 @@ const props = defineProps({
 })
 
 const docs = [
-    { key: 'Anschreiben', label: 'Anschreiben' },
-    { key: 'Lebenslauf',  label: 'Lebenslauf' },
-    { key: 'Zeugnisse',   label: 'Zeugnisse' },
-    { key: 'Zertifikate', label: 'Zertifikate' },
+    { key: 'Anschreiben', label: 'Anschreiben', required: true },
+    { key: 'Lebenslauf',  label: 'Lebenslauf',  required: true },
+    { key: 'Zeugnisse',   label: 'Zeugnisse',   required: true },
+    { key: 'Zertifikate', label: 'Zertifikate', required: false },
 ]
 
 const selectedStellenID = ref(null)
@@ -159,8 +159,17 @@ function onFile(key, event) {
 }
 
 function submit() {
-    processing.value = true
     Object.keys(errors).forEach(k => delete errors[k])
+
+    docs.filter(d => d.required && !files[d.key]).forEach(d => {
+        errors[d.key] = 'Dieses Dokument ist erforderlich.'
+    })
+    if (!dsgvo.value) {
+        errors.Datenschutzerklaerung = 'Bitte stimmen Sie der Datenschutzerklärung zu.'
+    }
+    if (Object.keys(errors).length) return
+
+    processing.value = true
 
     const data = new FormData()
     data.append('StellenID', selectedStellenID.value)
@@ -301,6 +310,10 @@ function submit() {
     color: #1a1a1a;
     width: 90px;
     flex-shrink: 0;
+}
+
+.required-star {
+    color: #c0392b;
 }
 
 .upload-btn {
