@@ -25,6 +25,7 @@ Route::get('/images/{image}', [StelleController::class, 'serveImage'])->name('im
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    Route::get('/stellen', [StelleController::class, 'manage'])->name('stellen.manage');
     Route::get('/stellen/create', [StelleController::class, 'create'])->name('stellen.create');
     Route::post('/stellen', [StelleController::class, 'store'])->name('stellen.store');
     Route::get('/stellen/{stelle}/edit', [StelleController::class, 'edit'])->name('stellen.edit');

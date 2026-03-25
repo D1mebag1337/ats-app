@@ -27,9 +27,11 @@ class DashboardController extends Controller
                 ->get();
         }
 
+        $isRecruiter = $user->isHR() || $user->Role === 'R';
+
         return Inertia::render('Dashboard', [
             'bewerbungen' => $bewerbungen,
-            'isRecruiter' => $user->isHR() || $user->Role === 'R',
+            'isRecruiter' => $isRecruiter,
         ]);
     }
 }

@@ -37,6 +37,15 @@ class StelleController extends Controller
             ->get();
     }
 
+    public function manage()
+    {
+        $stellen = Stelle::select(['StellenID', 'Name', 'Arbeitsorte', 'Online'])
+            ->latest('StellenID')
+            ->get();
+
+        return Inertia::render('StellenManage', ['stellen' => $stellen]);
+    }
+
     public function create()
     {
         return Inertia::render('StelleForm', [
