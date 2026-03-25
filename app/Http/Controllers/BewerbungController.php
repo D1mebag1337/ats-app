@@ -66,7 +66,7 @@ class BewerbungController extends Controller
             'Status'               => Bewerbung::STATUS_EINGEGANGEN,
             'created_at'           => now(),
             'updated_at'           => now(),
-        ]);
+        ], 'BewerbungID');
 
         return redirect()->route('dashboard');
     }
