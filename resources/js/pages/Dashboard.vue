@@ -20,11 +20,28 @@
                     <tbody>
                         <tr v-for="bew in bewerbungen" :key="bew.BewerbungID">
                             <td class="col-stelle">{{ bew.stelle?.Name ?? '—' }}</td>
-                            <td class="col-status">{{ bew.Status ?? '—' }}</td>
+                            <td class="col-status">
+                                <select
+                                    v-if="isRecruiter"
+                                    v-model="localStatus[bew.BewerbungID]"
+                                    class="status-select"
+                                    @change="markDirty(bew.BewerbungID)"
+                                >
+                                    <option v-for="s in statuses" :key="s" :value="s">{{ s }}</option>
+                                </select>
+                                <span v-else>{{ bew.Status ?? '—' }}</span>
+                            </td>
                             <td v-if="isRecruiter" class="col-bewerber">
                                 {{ bew.bewerber ? `${bew.bewerber.Vorname} ${bew.bewerber.Name}` : '—' }}
                             </td>
                             <td class="col-action">
+                                <button
+                                    v-if="isRecruiter && dirty[bew.BewerbungID]"
+                                    class="action-btn save-btn"
+                                    @click="saveStatus(bew.BewerbungID)"
+                                >
+                                    Speichern
+                                </button>
                                 <Link
                                     :href="`/bewerbungen/${bew.BewerbungID}`"
                                     class="action-btn"
@@ -44,13 +61,38 @@
 </template>
 
 <script setup>
-import { Link } from '@inertiajs/vue3'
+import { reactive } from 'vue'
+import { Link, router } from '@inertiajs/vue3'
 import PublicNavbar from '@/components/PublicNavbar.vue'
 
-defineProps({
+const props = defineProps({
     bewerbungen: { type: Array,   default: () => [] },
     isRecruiter: { type: Boolean, default: false },
 })
+
+const statuses = [
+    'Eingegangen',
+    'In Bearbeitung',
+    'Rückmeldung durch Bewerber offen',
+    'Bewerbungsgespräch offen',
+    'Abgeschlossen',
+]
+
+// initialise local status map from props
+const localStatus = reactive(
+    Object.fromEntries(props.bewerbungen.map(b => [b.BewerbungID, b.Status]))
+)
+const dirty = reactive({})
+
+function markDirty(id) {
+    dirty[id] = localStatus[id] !== props.bewerbungen.find(b => b.BewerbungID === id)?.Status
+}
+
+function saveStatus(id) {
+    router.patch(`/bewerbungen/${id}/status`, { Status: localStatus[id] }, {
+        onSuccess: () => { dirty[id] = false },
+    })
+}
 </script>
 
 <style scoped>
@@ -142,7 +184,32 @@ defineProps({
 .badge-active  { background: #d4edda; color: #1a6b2a; }
 .badge-inactive { background: #f0f0f0; color: #777; }
 
+/* ── Status dropdown ── */
+.status-select {
+    background: #ffffff;
+    border: 1px solid #c0c0c0;
+    border-radius: 8px;
+    padding: 0.35rem 0.6rem;
+    font-family: 'Source Serif 4', serif;
+    font-size: 0.82rem;
+    color: #1a1a1a;
+    cursor: pointer;
+    outline: none;
+    max-width: 200px;
+}
+
+.status-select:focus {
+    border-color: #2d7a2d;
+}
+
 /* ── Action button ── */
+.col-action {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    align-items: center;
+}
+
 .action-btn {
     display: inline-block;
     background: #1a1a1a;
@@ -160,6 +227,12 @@ defineProps({
 .action-btn:hover {
     opacity: 0.82;
     transform: translateY(-1px);
+}
+
+.save-btn {
+    background: #2d7a2d;
+    border: none;
+    cursor: pointer;
 }
 
 /* ── Empty state ── */

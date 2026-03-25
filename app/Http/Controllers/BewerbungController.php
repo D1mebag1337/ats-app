@@ -70,4 +70,15 @@ class BewerbungController extends Controller
 
         return redirect()->route('dashboard');
     }
+
+    public function updateStatus(Request $request, Bewerbung $bewerbung)
+    {
+        $request->validate([
+            'Status' => ['required', 'string', 'in:' . implode(',', Bewerbung::STATUSES)],
+        ]);
+
+        $bewerbung->update(['Status' => $request->input('Status')]);
+
+        return redirect()->route('dashboard');
+    }
 }

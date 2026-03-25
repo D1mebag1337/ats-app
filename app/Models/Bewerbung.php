@@ -12,11 +12,19 @@ class Bewerbung extends Model
     public $incrementing = true;
     protected $keyType = 'int';
 
-    const STATUS_EINGEGANGEN = 'Eingegangen';
-    const STATUS_IN_PRUEFUNG = 'In Prüfung';
-    const STATUS_EINGELADEN  = 'Eingeladen';
-    const STATUS_ABGELEHNT   = 'Abgelehnt';
-    const STATUS_ANGENOMMEN  = 'Angenommen';
+    const STATUS_EINGEGANGEN              = 'Eingegangen';
+    const STATUS_IN_BEARBEITUNG           = 'In Bearbeitung';
+    const STATUS_RUECKMELDUNG_OFFEN       = 'Rückmeldung durch Bewerber offen';
+    const STATUS_GESPRAECH_OFFEN          = 'Bewerbungsgespräch offen';
+    const STATUS_ABGESCHLOSSEN            = 'Abgeschlossen';
+
+    const STATUSES = [
+        self::STATUS_EINGEGANGEN,
+        self::STATUS_IN_BEARBEITUNG,
+        self::STATUS_RUECKMELDUNG_OFFEN,
+        self::STATUS_GESPRAECH_OFFEN,
+        self::STATUS_ABGESCHLOSSEN,
+    ];
 
     protected $fillable = [
         'UserID',

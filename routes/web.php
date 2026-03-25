@@ -33,6 +33,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/stellen', [StelleController::class, 'store'])->name('stellen.store');
     Route::get('/stellen/{stelle}/edit', [StelleController::class, 'edit'])->name('stellen.edit');
     Route::put('/stellen/{stelle}', [StelleController::class, 'update'])->name('stellen.update');
+    Route::patch('/bewerbungen/{bewerbung}/status', [BewerbungController::class, 'updateStatus'])->name('bewerbungen.updateStatus');
 });
 
 require __DIR__.'/settings.php';
