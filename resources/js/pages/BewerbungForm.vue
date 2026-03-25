@@ -84,7 +84,7 @@
                     <div class="dsgvo-field">
                         <input id="dsgvo" type="checkbox" v-model="dsgvo" />
                         <label for="dsgvo" class="dsgvo-text">
-                            „Hiermit willige ich ein, dass [Unternehmen] meine Daten zum Zweck der Durchführung des Bewerbungsverfahrens verarbeitet. Ich kann diese Einwilligung jederzeit widerrufen. Die Datenschutzerklärung habe ich zur Kenntnis genommen."
+                            „Hiermit willige ich ein, dass [Unternehmen] meine Daten zum Zweck der Durchführung des Bewerbungsverfahrens verarbeitet. Ich kann diese Einwilligung jederzeit widerrufen. Die <a href="/Datenschutzerklaerung_Beispiel.docx" target="_blank" class="dsgvo-link">Datenschutzerklärung</a> habe ich zur Kenntnis genommen."
                         </label>
                     </div>
                     <span v-if="errors.Datenschutzerklaerung" class="field-error">{{ errors.Datenschutzerklaerung }}</span>
@@ -367,6 +367,11 @@ function submit() {
     color: #444;
     line-height: 1.5;
     cursor: pointer;
+}
+
+.dsgvo-link {
+    color: #2d7a2d;
+    text-decoration: underline;
 }
 
 .field-error {
