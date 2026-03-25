@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\StelleController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BewerbungController;
 use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
@@ -27,6 +28,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/stellen', [StelleController::class, 'manage'])->name('stellen.manage');
     Route::get('/stellen/create', [StelleController::class, 'create'])->name('stellen.create');
+    Route::get('/stellen/{stelle}/bewerben', [BewerbungController::class, 'create'])->name('bewerbungen.create');
+    Route::post('/bewerbungen', [BewerbungController::class, 'store'])->name('bewerbungen.store');
     Route::post('/stellen', [StelleController::class, 'store'])->name('stellen.store');
     Route::get('/stellen/{stelle}/edit', [StelleController::class, 'edit'])->name('stellen.edit');
     Route::put('/stellen/{stelle}', [StelleController::class, 'update'])->name('stellen.update');

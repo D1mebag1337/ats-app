@@ -92,7 +92,7 @@
                     <p class="detail-desc">
                         {{ stelle.Beschreibung || dummyBeschreibung }}
                     </p>
-                    <a href="#" class="detail-apply-btn">Jetzt bewerben!</a>
+                    <Link :href="`/stellen/${stelle.StellenID}/bewerben`" class="detail-apply-btn">Jetzt bewerben!</Link>
                 </div>
                 <div class="detail-header-image">
                     <img
@@ -133,6 +133,7 @@
 
 <script setup>
 import { computed } from 'vue'
+import { Link } from '@inertiajs/vue3'
 import PublicNavbar from '@/components/PublicNavbar.vue'
 
 const props = defineProps({
