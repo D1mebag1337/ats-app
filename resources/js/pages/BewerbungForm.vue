@@ -2,9 +2,15 @@
     <div class="page">
         <PublicNavbar />
 
-        <!-- Title pill -->
+        <!-- Title pill / stelle selector -->
         <div class="title-bar">
-            <span class="title-text">Bewerbung für: <em>{{ stelle.Name }}</em></span>
+            <span class="title-prefix">Bewerbung für:</span>
+            <select v-model="selectedStellenID" class="stelle-select" required>
+                <option :value="null" disabled>— Stelle auswählen —</option>
+                <option v-for="s in stellen" :key="s.StellenID" :value="s.StellenID">
+                    {{ s.Name }}
+                </option>
+            </select>
         </div>
 
         <form @submit.prevent="submit" enctype="multipart/form-data">
@@ -16,7 +22,7 @@
 
                     <div class="field">
                         <label>Stelle</label>
-                        <input type="text" :value="stelle.Name" disabled />
+                        <input type="text" :value="selectedStelleName" disabled />
                     </div>
 
                     <div class="field">
@@ -104,7 +110,7 @@ import { router } from '@inertiajs/vue3'
 import PublicNavbar from '@/components/PublicNavbar.vue'
 
 const props = defineProps({
-    stelle:   { type: Object, required: true },
+    stellen:  { type: Array,  default: () => [] },
     bewerber: { type: Object, required: true },
 })
 
@@ -114,6 +120,11 @@ const docs = [
     { key: 'Zeugnisse',   label: 'Zeugnisse' },
     { key: 'Zertifikate', label: 'Zertifikate' },
 ]
+
+const selectedStellenID = ref(null)
+const selectedStelleName = computed(
+    () => props.stellen.find(s => s.StellenID === selectedStellenID.value)?.Name ?? ''
+)
 
 const files      = reactive({})
 const dsgvo      = ref(false)
@@ -134,7 +145,7 @@ function submit() {
     Object.keys(errors).forEach(k => delete errors[k])
 
     const data = new FormData()
-    data.append('StellenID', props.stelle.StellenID)
+    data.append('StellenID', selectedStellenID.value)
     data.append('Datenschutzerklaerung', dsgvo.value ? '1' : '0')
     docs.forEach(d => {
         if (files[d.key]) data.append(d.key, files[d.key])
@@ -161,21 +172,34 @@ function submit() {
 /* ── Title pill ── */
 .title-bar {
     display: flex;
+    align-items: center;
     justify-content: center;
+    gap: 0.6rem;
     padding: 1.75rem 1rem 0;
 }
 
-.title-text {
+.title-prefix {
     background: #e8e8e8;
-    border-radius: 999px;
-    padding: 0.55rem 2rem;
+    border-radius: 999px 0 0 999px;
+    padding: 0.55rem 1.25rem 0.55rem 1.75rem;
     font-size: 1rem;
     color: #1a1a1a;
+    white-space: nowrap;
 }
 
-.title-text em {
+.stelle-select {
+    background: #e8e8e8;
+    border: none;
+    border-radius: 0 999px 999px 0;
+    padding: 0.55rem 1.75rem 0.55rem 0.5rem;
+    font-family: 'Source Serif 4', serif;
+    font-size: 1rem;
     font-style: italic;
     font-weight: 700;
+    color: #1a1a1a;
+    cursor: pointer;
+    outline: none;
+    appearance: auto;
 }
 
 /* ── Two-column layout ── */

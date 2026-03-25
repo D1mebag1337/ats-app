@@ -27,6 +27,10 @@
                         <Link href="/stellen" class="nav-btn nav-btn--outline">Stellen editieren</Link>
                         <Link href="/stellen/create" class="nav-btn nav-btn--outline">Neue Stelle</Link>
                     </template>
+                    <!-- Applicant-only button -->
+                    <template v-if="isBewerber">
+                        <Link href="/bewerbungen/create" class="nav-btn nav-btn--outline">Bewerbung erstellen</Link>
+                    </template>
                 </div>
 
                 <form method="POST" action="/auth/logout" @submit.prevent="logout">
@@ -47,6 +51,8 @@ const user = computed(() => page.props.auth?.user ?? null)
 const displayName = computed(() => page.props.auth?.displayName ?? page.props.auth?.user?.Email ?? '')
 const role = computed(() => page.props.auth?.role ?? null)
 const isRecruiter = computed(() => role.value === 'R' || role.value === 'H')
+const isBewerber  = computed(() => role.value === 'B')
+
 
 function logout() {
     router.post('/auth/logout')

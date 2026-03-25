@@ -11,13 +11,13 @@ use Inertia\Inertia;
 
 class BewerbungController extends Controller
 {
-    public function create(Stelle $stelle)
+    public function create()
     {
         $user     = auth()->user();
         $bewerber = Bewerber::where('UserID', $user->UserID)->firstOrFail();
 
         return Inertia::render('BewerbungForm', [
-            'stelle'   => $stelle->only(['StellenID', 'Name']),
+            'stellen'  => Stelle::online()->select(['StellenID', 'Name'])->get(),
             'bewerber' => [
                 'Name'     => $bewerber->Name,
                 'Vorname'  => $bewerber->Vorname,

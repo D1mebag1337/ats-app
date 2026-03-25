@@ -92,7 +92,7 @@
                     <p class="detail-desc">
                         {{ stelle.Beschreibung || dummyBeschreibung }}
                     </p>
-                    <Link :href="`/stellen/${stelle.StellenID}/bewerben`" class="detail-apply-btn">Jetzt bewerben!</Link>
+                    <Link href="/bewerbungen/create" class="detail-apply-btn">Jetzt bewerben!</Link>
                 </div>
                 <div class="detail-header-image">
                     <img
