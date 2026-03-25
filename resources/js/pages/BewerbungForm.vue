@@ -137,7 +137,25 @@ const gebMonat = computed(() => props.bewerber.Gebdatum?.split('-')[1] ?? '')
 const gebJahr  = computed(() => props.bewerber.Gebdatum?.split('-')[0] ?? '')
 
 function onFile(key, event) {
-    files[key] = event.target.files[0] ?? null
+    const file = event.target.files[0] ?? null
+    delete errors[key]
+
+    if (file) {
+        if (file.type !== 'application/pdf') {
+            errors[key] = 'Nur PDF-Dateien sind erlaubt.'
+            event.target.value = ''
+            files[key] = null
+            return
+        }
+        if (file.size > 2 * 1024 * 1024) {
+            errors[key] = 'Die Datei darf maximal 2 MB groß sein.'
+            event.target.value = ''
+            files[key] = null
+            return
+        }
+    }
+
+    files[key] = file
 }
 
 function submit() {

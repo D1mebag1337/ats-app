@@ -34,10 +34,10 @@ class BewerbungController extends Controller
     {
         $request->validate([
             'StellenID'            => ['required', 'integer', 'exists:stellen,StellenID'],
-            'Anschreiben'          => ['nullable', 'file', 'mimes:pdf', 'max:5120'],
-            'Lebenslauf'           => ['nullable', 'file', 'mimes:pdf', 'max:5120'],
-            'Zeugnisse'            => ['nullable', 'file', 'mimes:pdf', 'max:5120'],
-            'Zertifikate'          => ['nullable', 'file', 'mimes:pdf', 'max:5120'],
+            'Anschreiben'          => ['nullable', 'file', 'mimes:pdf', 'max:2048'],
+            'Lebenslauf'           => ['nullable', 'file', 'mimes:pdf', 'max:2048'],
+            'Zeugnisse'            => ['nullable', 'file', 'mimes:pdf', 'max:2048'],
+            'Zertifikate'          => ['nullable', 'file', 'mimes:pdf', 'max:2048'],
             'Datenschutzerklaerung' => ['required', 'accepted'],
         ]);
 
