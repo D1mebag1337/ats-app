@@ -71,6 +71,57 @@ class BewerbungController extends Controller
         return redirect()->route('dashboard');
     }
 
+    public function downloadUnterlagen(Bewerbung $bewerbung)
+    {
+        $record = DB::table('bewerbungen')
+            ->where('BewerbungID', $bewerbung->BewerbungID)
+            ->select(['Anschreiben', 'Lebenslauf', 'Zeugnisse', 'Zertifikate'])
+            ->first();
+
+        $slots = [
+            'Anschreiben' => $record->Anschreiben,
+            'Lebenslauf'  => $record->Lebenslauf,
+            'Zeugnisse'   => $record->Zeugnisse,
+            'Zertifikate' => $record->Zertifikate,
+        ];
+
+        // Bytea comes back as a PHP stream resource from PDO/pgsql
+        $docs = array_filter($slots, fn($v) => $v !== null);
+
+        if (empty($docs)) {
+            abort(404, 'Keine Unterlagen vorhanden.');
+        }
+
+        $read = fn($v) => is_resource($v) ? stream_get_contents($v) : $v;
+
+        // Single file — return directly as PDF
+        if (count($docs) === 1) {
+            $name    = array_key_first($docs);
+            $content = $read($docs[$name]);
+            return response($content, 200, [
+                'Content-Type'        => 'application/pdf',
+                'Content-Disposition' => "attachment; filename=\"{$name}.pdf\"",
+            ]);
+        }
+
+        // Multiple files — bundle into a ZIP
+        $tmp = tempnam(sys_get_temp_dir(), 'unterlagen_');
+        $zip = new \ZipArchive();
+        $zip->open($tmp, \ZipArchive::OVERWRITE);
+
+        foreach ($docs as $name => $data) {
+            $zip->addFromString("{$name}.pdf", $read($data));
+        }
+
+        $zip->close();
+
+        return response()
+            ->download($tmp, "Bewerbung_{$bewerbung->BewerbungID}_Unterlagen.zip", [
+                'Content-Type' => 'application/zip',
+            ])
+            ->deleteFileAfterSend(true);
+    }
+
     public function updateStatus(Request $request, Bewerbung $bewerbung)
     {
         $request->validate([

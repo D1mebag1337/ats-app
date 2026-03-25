@@ -34,6 +34,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/stellen/{stelle}/edit', [StelleController::class, 'edit'])->name('stellen.edit');
     Route::put('/stellen/{stelle}', [StelleController::class, 'update'])->name('stellen.update');
     Route::patch('/bewerbungen/{bewerbung}/status', [BewerbungController::class, 'updateStatus'])->name('bewerbungen.updateStatus');
+    Route::get('/bewerbungen/{bewerbung}/download', [BewerbungController::class, 'downloadUnterlagen'])->name('bewerbungen.download');
 });
 
 require __DIR__.'/settings.php';

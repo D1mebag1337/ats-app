@@ -42,12 +42,12 @@
                                 >
                                     Speichern
                                 </button>
-                                <Link
-                                    :href="`/bewerbungen/${bew.BewerbungID}`"
+                                <a
+                                    :href="`/bewerbungen/${bew.BewerbungID}/download`"
                                     class="action-btn"
                                 >
                                     Unterlagen aufrufen
-                                </Link>
+                                </a>
                             </td>
                         </tr>
                     </tbody>
