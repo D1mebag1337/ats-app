@@ -17,15 +17,21 @@
 
                     <!-- Kurzbeschreibung -->
                     <div class="field">
-                        <label>Allgemeine Stellenbeschreibung (max. 30 Wörter)</label>
+                        <label>Kurzbeschreibung (max. 30 Wörter)</label>
                         <textarea v-model="form.Kurzbeschreibung" rows="4" placeholder="Lorem ipsum…" required />
+                        <span v-if="kurzbeschreibungWordCount > 30" class="field-warning">
+                            {{ kurzbeschreibungWordCount }} / 30 Wörter — bitte kürzen.
+                        </span>
                         <span v-if="errors.Kurzbeschreibung" class="field-error">{{ errors.Kurzbeschreibung }}</span>
                     </div>
 
                     <!-- Beschreibung -->
                     <div class="field">
-                        <label>Beschreibung</label>
+                        <label>Allgemeine Stellenbeschreibung (max. 60 Wörter)</label>
                         <textarea v-model="form.Beschreibung" rows="5" placeholder="Ausführliche Beschreibung der Stelle…" required />
+                        <span v-if="beschreibungWordCount > 60" class="field-warning">
+                            {{ beschreibungWordCount }} / 60 Wörter — bitte kürzen.
+                        </span>
                         <span v-if="errors.Beschreibung" class="field-error">{{ errors.Beschreibung }}</span>
                     </div>
 
@@ -124,7 +130,7 @@
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue'
+import { reactive, ref, computed } from 'vue'
 import { router } from '@inertiajs/vue3'
 import PublicNavbar from '@/components/PublicNavbar.vue'
 
@@ -143,6 +149,14 @@ const form = reactive({
     ImageID:         props.stelle?.ImageID         ?? null,
     Online:          props.stelle?.Online          ?? false,
 })
+
+const kurzbeschreibungWordCount = computed(() =>
+    form.Kurzbeschreibung.trim() === '' ? 0 : form.Kurzbeschreibung.trim().split(/\s+/).length
+)
+
+const beschreibungWordCount = computed(() =>
+    form.Beschreibung.trim() === '' ? 0 : form.Beschreibung.trim().split(/\s+/).length
+)
 
 const errors = reactive({})
 const processing = ref(false)
@@ -260,6 +274,11 @@ function submit() {
 .field-error {
     font-size: 0.78rem;
     color: #c0392b;
+}
+
+.field-warning {
+    font-size: 0.78rem;
+    color: #e67e22;
 }
 
 /* ── Bullet list ── */

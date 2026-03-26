@@ -70,8 +70,12 @@ class StelleController extends Controller
 
         $request->validate([
             'Name'             => ['required', 'string', 'max:255'],
-            'Kurzbeschreibung' => ['required', 'string'],
-            'Beschreibung'     => ['required', 'string'],
+            'Kurzbeschreibung' => ['required', 'string', function ($attr, $value, $fail) {
+                if (str_word_count($value) > 30) $fail('Die Kurzbeschreibung darf maximal 30 Wörter enthalten.');
+            }],
+            'Beschreibung'     => ['required', 'string', function ($attr, $value, $fail) {
+                if (str_word_count($value) > 60) $fail('Die Beschreibung darf maximal 60 Wörter enthalten.');
+            }],
             'Arbeitsorte'      => ['required', 'string', 'max:255'],
             'Aufgaben'         => ['required', 'array', 'min:1'],
             'Aufgaben.*'       => ['required', 'string'],
@@ -111,8 +115,12 @@ Stelle::create([
 
         $request->validate([
             'Name'             => ['required', 'string', 'max:255'],
-            'Kurzbeschreibung' => ['required', 'string'],
-            'Beschreibung'     => ['required', 'string'],
+            'Kurzbeschreibung' => ['required', 'string', function ($attr, $value, $fail) {
+                if (str_word_count($value) > 30) $fail('Die Kurzbeschreibung darf maximal 30 Wörter enthalten.');
+            }],
+            'Beschreibung'     => ['required', 'string', function ($attr, $value, $fail) {
+                if (str_word_count($value) > 60) $fail('Die Beschreibung darf maximal 60 Wörter enthalten.');
+            }],
             'Arbeitsorte'      => ['required', 'string', 'max:255'],
             'Aufgaben'         => ['required', 'array', 'min:1'],
             'Aufgaben.*'       => ['required', 'string'],
