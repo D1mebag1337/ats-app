@@ -22,6 +22,13 @@
                         <span v-if="errors.Kurzbeschreibung" class="field-error">{{ errors.Kurzbeschreibung }}</span>
                     </div>
 
+                    <!-- Beschreibung -->
+                    <div class="field">
+                        <label>Beschreibung</label>
+                        <textarea v-model="form.Beschreibung" rows="5" placeholder="Ausführliche Beschreibung der Stelle…" required />
+                        <span v-if="errors.Beschreibung" class="field-error">{{ errors.Beschreibung }}</span>
+                    </div>
+
                     <!-- Arbeitsorte -->
                     <div class="field">
                         <label>Arbeitsorte</label>
@@ -127,9 +134,10 @@ const props = defineProps({
 })
 
 const form = reactive({
-    Name:            props.stelle?.Name            ?? '',
+    Name:             props.stelle?.Name             ?? '',
     Kurzbeschreibung: props.stelle?.Kurzbeschreibung ?? '',
-    Arbeitsorte:     props.stelle?.Arbeitsorte     ?? '',
+    Beschreibung:     props.stelle?.Beschreibung     ?? '',
+    Arbeitsorte:      props.stelle?.Arbeitsorte      ?? '',
     Aufgaben:        props.stelle?.Aufgaben        ?? [],
     Voraussetzungen: props.stelle?.Voraussetzungen ?? [],
     ImageID:         props.stelle?.ImageID         ?? null,
@@ -154,6 +162,7 @@ function submit() {
     const payload = {
         Name:             form.Name,
         Kurzbeschreibung: form.Kurzbeschreibung,
+        Beschreibung:     form.Beschreibung,
         Arbeitsorte:      form.Arbeitsorte,
         Aufgaben:         form.Aufgaben.filter(a => a.trim()),
         Voraussetzungen:  form.Voraussetzungen.filter(v => v.trim()),

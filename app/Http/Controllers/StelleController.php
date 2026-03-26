@@ -71,6 +71,7 @@ class StelleController extends Controller
         $request->validate([
             'Name'             => ['required', 'string', 'max:255'],
             'Kurzbeschreibung' => ['required', 'string'],
+            'Beschreibung'     => ['required', 'string'],
             'Arbeitsorte'      => ['required', 'string', 'max:255'],
             'Aufgaben'         => ['required', 'array', 'min:1'],
             'Aufgaben.*'       => ['required', 'string'],
@@ -85,7 +86,7 @@ class StelleController extends Controller
 Stelle::create([
             'Name'             => $request->input('Name'),
             'Kurzbeschreibung' => $request->input('Kurzbeschreibung', ''),
-            'Beschreibung'     => $request->input('Kurzbeschreibung', ''),
+            'Beschreibung'     => $request->input('Beschreibung', ''),
             'Arbeitsorte'      => $request->input('Arbeitsorte', ''),
             'Aufgaben'         => $request->input('Aufgaben'),
             'Voraussetzungen'  => $request->input('Voraussetzungen'),
@@ -111,6 +112,7 @@ Stelle::create([
         $request->validate([
             'Name'             => ['required', 'string', 'max:255'],
             'Kurzbeschreibung' => ['required', 'string'],
+            'Beschreibung'     => ['required', 'string'],
             'Arbeitsorte'      => ['required', 'string', 'max:255'],
             'Aufgaben'         => ['required', 'array', 'min:1'],
             'Aufgaben.*'       => ['required', 'string'],
@@ -125,6 +127,7 @@ Stelle::create([
 $stelle->update([
             'Name'             => $request->input('Name'),
             'Kurzbeschreibung' => $request->input('Kurzbeschreibung', $stelle->Kurzbeschreibung),
+            'Beschreibung'     => $request->input('Beschreibung', $stelle->Beschreibung),
             'Arbeitsorte'      => $request->input('Arbeitsorte', $stelle->Arbeitsorte),
             'Aufgaben'         => $request->input('Aufgaben'),
             'Voraussetzungen'  => $request->input('Voraussetzungen'),
