@@ -36,25 +36,9 @@
         <section id="stellenanzeigen" class="jobs-section">
 
             <div class="jobs-hero-images">
-                <div
-                    v-for="stelle in heroStellen"
-                    :key="stelle.StellenID"
-                    class="jobs-hero-slot"
-                >
-                    <img
-                        v-if="stelle.image?.Alternativtext"
-                        :src="`/stelle-images/${stelle.image.Alternativtext}`"
-                        :alt="stelle.Name"
-                    />
-                    <div v-else class="jobs-hero-placeholder" />
-                </div>
-                <div
-                    v-for="n in Math.max(0, 3 - heroStellen.length)"
-                    :key="`ph-${n}`"
-                    class="jobs-hero-slot"
-                >
-                    <div class="jobs-hero-placeholder" />
-                </div>
+                <div class="jobs-hero-slot"><img src="/kachel1.jpg" alt="Kachel 1" /></div>
+                <div class="jobs-hero-slot"><img src="/kachel2.jpg" alt="Kachel 2" /></div>
+                <div class="jobs-hero-slot"><img src="/kachel3.jpg" alt="Kachel 3" /></div>
             </div>
 
             <h2 class="jobs-headline">Level Up – Probier was Neues.</h2>
@@ -175,10 +159,6 @@ const dummyVoraussetzungen = [
     'Lust auf Teamarbeit, Kundennähe und gelegentliche Dienstreisen innerhalb Deutschlands',
     'Sehr gute Deutschkenntnisse und idealerweise Englischkenntnisse',
 ]
-
-const heroStellen = computed(() =>
-    props.stellen.filter(s => s.image?.Alternativtext).slice(0, 3)
-)
 
 function scrollToJobs() {
     document.getElementById('stellenanzeigen')?.scrollIntoView({ behavior: 'smooth' })
